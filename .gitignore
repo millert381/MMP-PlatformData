@@ -1,0 +1,9 @@
+# Docker volumes
+pgdata/
+
+# Env files
+.env
+
+# OS
+.DS_Store
+Thumbs.db
