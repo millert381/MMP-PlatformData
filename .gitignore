@@ -4,6 +4,9 @@ pgdata/
 # Env files
 .env
 
+# Zip backups
+*.zip
+
 # OS
 .DS_Store
 Thumbs.db

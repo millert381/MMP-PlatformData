@@ -12,14 +12,46 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./init:/docker-entrypoint-initdb.d
-      - ./backups:/backups
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  db-init:
+    image: postgres:16
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-platform}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-platform}
+      POSTGRES_DB: ${POSTGRES_DB:-platform}
+    volumes:
+      - ./init:/init
+    entrypoint: >
+      bash -c "
+      echo 'Running init scripts...';
+      for f in /init/*.sql; do
+        echo 'Executing' $$f;
+        psql -h postgres -U $$POSTGRES_USER $$POSTGRES_DB -f $$f;
+      done
+      echo 'Init complete';
+      "
+    restart: "no"
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: mmp-pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@local}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
 
 volumes:
   pgdata:
