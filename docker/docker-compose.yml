@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: timescale/timescaledb-ha:pg18
+    image: timescale/timescaledb:latest-pg18
     container_name: mmp-platform-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-platform}
@@ -18,28 +18,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  db-init:
-    image: postgres:16
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-platform}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-platform}
-      POSTGRES_DB: ${POSTGRES_DB:-platform}
-    volumes:
-      - ./init:/init
-    entrypoint: >
-      bash -c "
-      echo 'Running init scripts...';
-      for f in /init/*.sql; do
-        echo 'Executing' $$f;
-        psql -h postgres -U $$POSTGRES_USER $$POSTGRES_DB -f $$f;
-      done
-      echo 'Init complete';
-      "
-    restart: "no"
 
   # pgadmin:
   #   image: dpage/pgadmin4

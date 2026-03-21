@@ -1,7 +1,7 @@
-CREATE ROLE platform_app WITH LOGIN PASSWORD 'platform_app';
+CREATE ROLE platform WITH LOGIN PASSWORD 'Passw0rd!';
 
-GRANT USAGE ON SCHEMA platform, events, ai, logs TO platform_app;
-GRANT CREATE ON SCHEMA platform, events, ai, logs TO platform_app;
+GRANT USAGE ON SCHEMA platform, events, ai, logs TO platform;
+GRANT CREATE ON SCHEMA platform, events, ai, logs TO platform;
 
-ALTER DEFAULT PRIVILEGES IN SCHEMA events GRANT ALL ON TABLES TO platform_app;
-ALTER DEFAULT PRIVILEGES IN SCHEMA ai GRANT ALL ON TABLES TO platform_app;
+ALTER DEFAULT PRIVILEGES IN SCHEMA events GRANT ALL ON TABLES TO platform;
+ALTER DEFAULT PRIVILEGES IN SCHEMA ai GRANT ALL ON TABLES TO platform;
